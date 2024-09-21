@@ -15,6 +15,7 @@ It writes the students hardcoded first and last name along with the current user
 int main(int argc, char *argv[]) {
     char name[] = "Adel Sahuc";
 
+    /*
     char userId[32]; //32 bytes or 32 characters
     FILE *pipe;
     
@@ -28,6 +29,11 @@ int main(int argc, char *argv[]) {
 
     fgets(userId, sizeof(userId), pipe); //gets 32 bytes of charactes from pipe to userId
 					 
+    printf("%s", userId);
+    */
+    char userId[32];
+    sprintf(userId, "%d\n", getuid()); 
+    
     int inputFile = open(argv[1], O_RDONLY);  
     if(inputFile == -1){
          close(inputFile);
