@@ -89,10 +89,3 @@ close input
 close output
 */
 
-
-/*
-   printf("Entered %d arguments", argc);
-   for (int i = 0; i < argc; i++){
-	  printf("%s\n", argv[i]);
-   }
-*/
