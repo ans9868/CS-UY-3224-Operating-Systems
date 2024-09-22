@@ -2,7 +2,6 @@
 Adel Sahuc
 Program that takes in an input file and an output file as parameters.
 It writes the students hardcoded first and last name along with the current user id into the output file.
-
 */
 
 #include <stdio.h>
@@ -32,7 +31,7 @@ int main(int argc, char *argv[]) {
     printf("%s", userId);
     */
     char userId[32];
-    sprintf(userId, "%d\n", getuid()); 
+    sprintf(userId, "%d", getuid()); 
     
     int inputFile = open(argv[1], O_RDONLY);  
     if(inputFile == -1){
@@ -40,7 +39,7 @@ int main(int argc, char *argv[]) {
          return 1;
     }
 
-    int outputFile = open(argv[2], O_WRONLY | O_CREAT , 0777);   
+    int outputFile = open(argv[2], O_WRONLY | O_CREAT, 0777);   
     if(outputFile == -1){
          close(inputFile);
          close(outputFile);
@@ -51,7 +50,7 @@ int main(int argc, char *argv[]) {
     write(outputFile, name, sizeof(name));
     write(outputFile, " ", 2);
     write(outputFile, userId, sizeof(userId));
-    //write(outputFile, "\n", 2);
+    write(outputFile, "\n", 2);
 
     char* readBuff = (char*)calloc(64, sizeof(char));
     while(read(inputFile, readBuff, sizeof(readBuff) > 0)){  // 0 -> end of file, -1 -> error or signal INT
@@ -64,7 +63,6 @@ int main(int argc, char *argv[]) {
 	 }
     }
     
-
     free(readBuff);
     close(inputFile);
     close(outputFile);
