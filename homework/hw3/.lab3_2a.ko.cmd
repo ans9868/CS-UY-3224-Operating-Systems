@@ -1,0 +1,1 @@
+savedcmd_/home/user/CS-UY-3224-Operating-Systems/homework/hw3/lab3_2a.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/user/CS-UY-3224-Operating-Systems/homework/hw3/lab3_2a.ko /home/user/CS-UY-3224-Operating-Systems/homework/hw3/lab3_2a.o /home/user/CS-UY-3224-Operating-Systems/homework/hw3/lab3_2a.mod.o
