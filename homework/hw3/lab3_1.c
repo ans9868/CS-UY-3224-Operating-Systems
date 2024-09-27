@@ -7,9 +7,9 @@ MODULE_LICENSE("Dual BSD/GPL");
 static int tikTime(void)
 {
     long hz = HZ;
-    //printk("Hz: %lu", hz);
     long tickTime =  1000 / hz;
-    //printk(KERN_ALERT "Tick: %lu", tickTime);
+    //printk("Hz: %lu", hz);
+    //printk(KERN_ALERT "%lu", tickTime);
     printk(KERN_ALERT "Hello, world\n%lu", tickTime);
     return 0;
 }

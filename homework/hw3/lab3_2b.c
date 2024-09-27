@@ -17,7 +17,7 @@ static void diffTime(void) //module exit, my kernel module woult not close unles
     
     ktime_t endTime = ktime_get_boottime();
     ktime_t elapsedTime = ktime_to_ns(ktime_sub(endTime, startTime));
-    printk(KERN_ALERT "%llu\n", elapsedTime);
+    printk(KERN_ALERT "%lld\n", elapsedTime); 
 }
 
 module_init(recordTime);

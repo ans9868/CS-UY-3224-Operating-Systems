@@ -3,7 +3,7 @@
 #include <linux/jiffies.h>
 
 
-long startTime;
+unsigned long startTime;
 
 MODULE_LICENSE("Dual BSD/GPL");
 static int recordJiff(void)
@@ -14,8 +14,8 @@ static int recordJiff(void)
 
 static void diffJiff(void) //module exit, my kernel module woult not close unless i had an explicit
 {
-    long endTime = jiffies;
-    long elapsedTime = endTime - startTime;
+    unsigned long endTime = jiffies;
+    unsigned long elapsedTime = endTime - startTime;
     printk(KERN_ALERT "%lu\n", elapsedTime);
 }
 
