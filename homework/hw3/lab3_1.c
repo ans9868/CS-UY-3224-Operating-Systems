@@ -10,8 +10,7 @@ static int tikTime(void)
     //printk("Hz: %lu", hz);
     long tickTime =  1000 / hz;
     //printk(KERN_ALERT "Tick: %lu", tickTime);
-    printk(KERN_ALERT "Hello, world\n", tickTime);
-    printk(KERN_ALERT "%lu", tickTime);
+    printk(KERN_ALERT "Hello, world\n%lu", tickTime);
     return 0;
 }
 
