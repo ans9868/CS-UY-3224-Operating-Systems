@@ -1,1 +1,1 @@
-savedcmd_/home/user/CS-UY-3224-Operating-Systems/homework/hw3/modules.order := {   echo /home/user/CS-UY-3224-Operating-Systems/homework/hw3/lab3_1.o; :; } > /home/user/CS-UY-3224-Operating-Systems/homework/hw3/modules.order
+savedcmd_/home/user/CS-UY-3224-Operating-Systems/homework/hw3/modules.order := {   echo /home/user/CS-UY-3224-Operating-Systems/homework/hw3/lab3_2b.o; :; } > /home/user/CS-UY-3224-Operating-Systems/homework/hw3/modules.order
