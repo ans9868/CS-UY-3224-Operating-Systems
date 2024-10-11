@@ -61,7 +61,7 @@ int main(int args, char* argv[])
            }
            int sleepTime = rand() % 4;
            sleep(sleepTime); 
-           printf("child %llu\n", tempb);       
+           //printf("child %llu\n", tempb);       
            qPtr[(*in)] = tempb; 
            *in = (*in + 1) % QSIZE;
         }
