@@ -12,11 +12,11 @@
 //Todo: change the size of the buffer to 5
 
 const char* name  = "fib";
+const int SIZE = BUF_SZ*(sizeof(long long));
 
 int retrieve_fib(int n) //parent
 {
     /* the size (in bytes) of shared memory object */
-    const int SIZE = BUF_SZ;
     /* name of the shared memory object */
     /* strings written to shared memory */
     
@@ -32,17 +32,20 @@ int retrieve_fib(int n) //parent
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
 
     /* configure the size of the shared memory object */
-    ftruncate(shm_fd, SIZE*(sizeof(long long)));
+    ftruncate(shm_fd, SIZE);
 
     /* memory map the shared memory object */
-    ptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    ptr = mmap(0, SIZE, PROT_WRITE | PROT_READ, MAP_SHARED, shm_fd, 0);
 
 
     /*put n into the shared file */
     sprintf(ptr, "%d", n);
     ptr += sizeof(long long);
+    //ptr += strlen(ptr);
 
     /* write to the shared memory object */
+    
+/*
     unsigned long long a = 0;
     unsigned long long b = 1;
     unsigned long long tempb = 1;
@@ -54,6 +57,8 @@ int retrieve_fib(int n) //parent
        ptr += sizeof(long long);
        printf("p: %lld\n", tempb);
     }
+*/
+
    /* 
     sprintf(ptr, "%s", message_0);
     ptr += strlen(message_0);
@@ -66,23 +71,42 @@ int retrieve_fib(int n) //parent
 int produce_fib() //child
 {
     /* the size (in bytes) of shared memory object */
-    const int SIZE = BUF_SZ;
     /* name of the shared memory object */
 
     /* shared memory file descriptor */
     int shm_fd;
     /* pointer to shared memory object */
-    void *ptr;
+    //void* readptr, *writeptr ;
+    void* ptr; 
 
     /* open the shared memory object */
-    shm_fd = shm_open(name, O_RDONLY, 0666);
+    shm_fd = shm_open(name, O_RDWR, 0666);
 
     /* memory map the shared memory object */
-    ptr = mmap(0, SIZE, PROT_READ, MAP_SHARED, shm_fd, 0);
+    //ptr = (long long *)mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    ptr = mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+//    writeptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
+    
+    //sprintf(ptr, "%lld", 100);
     /* read from the shared memory object */
     printf("%s", (char *)ptr); //in this case it reads and prints to console 
+    
+    long long n;
+    sprintf(n, "%lld", ptr[0]);
 
+    unsigned long long a = 0;
+    unsigned long long b = 1;
+    unsigned long long tempb = 1;
+    for(int x=0; x < n; ++x){ //n+1? or <=
+       tempb = b;
+       b = a + b;
+       a = tempb;
+       sprintf(ptr, "%lld", tempb);
+       ptr += sizeof(long long);
+       printf("p: %lld\n", tempb);
+    }
+ 
     /* remove the shared memory object */
     shm_unlink(name);
 
@@ -97,6 +121,7 @@ int main(int args, char* argv[])
       return 1; 
    }
    retrieve_fib(atoi(argv[1]));//parent 
+    sleep(1);//to prevvent reading at same time
    produce_fib(); //child      
     return 0;
 }
