@@ -20,13 +20,10 @@ int retrieve_fib(int n) //parent
     /* name of the shared memory object */
     /* strings written to shared memory */
     
-    const char *message_0 = "Hello";
-    const char *message_1 = "World!";
 
     /* shared memory file descriptor */
     int shm_fd;
     /* pointer to shared memory object */
-    void *ptr;
 
     /* create the shared memory object */
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
@@ -35,12 +32,14 @@ int retrieve_fib(int n) //parent
     ftruncate(shm_fd, SIZE);
 
     /* memory map the shared memory object */
-    ptr = mmap(0, SIZE, PROT_WRITE | PROT_READ, MAP_SHARED, shm_fd, 0);
+    long long *ptr = (long long *)mmap(0, SIZE, PROT_WRITE | PROT_READ, MAP_SHARED, shm_fd, 0);
 
 
     /*put n into the shared file */
-    sprintf(ptr, "%d", n);
-    ptr += sizeof(long long);
+    //sprintf(ptr, "%d", n);
+    //ptr += sizeof(long long);
+    ptr[0] = n;
+
     //ptr += strlen(ptr);
 
     /* write to the shared memory object */
@@ -77,24 +76,28 @@ int produce_fib() //child
     int shm_fd;
     /* pointer to shared memory object */
     //void* readptr, *writeptr ;
-    void* ptr; 
 
     /* open the shared memory object */
     shm_fd = shm_open(name, O_RDWR, 0666);
 
     /* memory map the shared memory object */
-    //ptr = (long long *)mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
-    ptr = mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
-//    writeptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    long long *ptr = (long long *)mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    //void* ptr; 
+    //ptr = mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    //writeptr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
     
     //sprintf(ptr, "%lld", 100);
     /* read from the shared memory object */
-    printf("%s", (char *)ptr); //in this case it reads and prints to console 
     
-    long long n;
-    sprintf(n, "%lld", ptr[0]);
+    printf("ptr[0]: %lld\n", ptr[0]); //in this case it reads and prints to console 
+    
+    long long index = 0;
+    long long n = ptr[index];
+    ++index; 
 
+    //two indexes in and out need to be setup here
+    
     unsigned long long a = 0;
     unsigned long long b = 1;
     unsigned long long tempb = 1;
@@ -102,10 +105,14 @@ int produce_fib() //child
        tempb = b;
        b = a + b;
        a = tempb;
-       sprintf(ptr, "%lld", tempb);
-       ptr += sizeof(long long);
-       printf("p: %lld\n", tempb);
+       //do teh wait while loop here
+       ptr[index]=tempb;
+       ++index;
+       //ptr += sizeof(long long);
+       //sprintf(ptr, "%lld", tempb);
+       //printf("p: %lld\n", tempb);
     }
+    
  
     /* remove the shared memory object */
     shm_unlink(name);
@@ -116,6 +123,8 @@ int produce_fib() //child
 
 int main(int args, char* argv[])
 {
+    //create two shared pointers in and out so parent/child don't write ame thing at same time 
+    //put these varaibles in and out in teh shared memorry and set teh size for the other objects to 3.
    if(args <= 1){
       printf("Error missing arg"); 
       return 1; 
@@ -125,3 +134,4 @@ int main(int args, char* argv[])
    produce_fib(); //child      
     return 0;
 }
+
