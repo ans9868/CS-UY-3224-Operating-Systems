@@ -51,30 +51,33 @@ int main(int args, char* argv[])
         int fib_length = qPtr[0];
         unsigned long long a = 0, b = 1, tempb;
         printf("fibLength: %d\n", fib_length);
-        for(int x=0; x < fib_length; ++x){            
+        for(int x = 0; x < fib_length; ++x){            
            tempb = b;
            b = a + b;
            a = tempb;
 //           printf("Child out and in: %llu %llu\n", *out, *in);
-           while(((*in) + 1) == (*out)){
+           while((*in + 1) == *out){
  //               printf("Child out and in: %llu %llu\n", *out, *in);
            }
-           int sleepTime = rand() % 3;
+           int sleepTime = rand() % 4;
            sleep(sleepTime); 
-           qPtr[(*in)] = tempb; 
-           *in = (*in+1)%QSIZE;
            printf("child %llu\n", tempb);       
+           qPtr[(*in)] = tempb; 
+           *in = (*in + 1) % QSIZE;
         }
     }else{ //parent
         for (int i = 0; i < n; ++i){
-            while((*out) == (*in)){
+            while(*out == *in){
 //                printf("Parent waiting, out and in: %llu %llu\n", *out, *in);
                         //do nothing
             }
             printf("parent %llu\n", qPtr[(*out)]); 
-            *out = (*out+1)%QSIZE;
+            *out = (*out + 1) % QSIZE;
             //printf("parent %llu\n", qPtr[1]);       
         }
+        munmap(qPtr, SIZE);
+        close(shm_fd);
+        shm_unlink(name);
         //NEED TO UNLINK HERE, possible need to change qPtr baluesunlink(
     }
     return 0;
