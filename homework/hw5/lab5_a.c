@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>  // For shm_open, shm_unlink, mmap, PROT_* constants
 #include <unistd.h>    // For ftruncate
-
+#include <time.h>
 
 #define BUF_SZ 5 
 
@@ -20,7 +20,7 @@ int main(int args, char* argv[])
       printf("Error missing arg"); 
       return 1; 
    }
-
+    srand(time(NULL));
     int shm_fd;
 
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
@@ -49,30 +49,33 @@ int main(int args, char* argv[])
     
     if (pid == 0 ){ //child
         int fib_length = qPtr[0];
-        unsigned long long a = 0, b = 1, tempb = 1;
+        unsigned long long a = 0, b = 1, tempb;
         printf("fibLength: %d\n", fib_length);
         for(int x=0; x < fib_length; ++x){            
            tempb = b;
            b = a + b;
            a = tempb;
-           printf("Child out and in: %llu %llu\n", *out, *in);
-           while(((*in) + 1)%QSIZE == (*out)%QSIZE){
-                printf("Child out and in: %llu %llu\n", *out, *in);
+//           printf("Child out and in: %llu %llu\n", *out, *in);
+           while(((*in) + 1) == (*out)){
+ //               printf("Child out and in: %llu %llu\n", *out, *in);
            }
-           qPtr[(*in)%QSIZE] = tempb; 
-           *(in++);
+           int sleepTime = rand() % 3;
+           sleep(sleepTime); 
+           qPtr[(*in)] = tempb; 
+           *in = (*in+1)%QSIZE;
            printf("child %llu\n", tempb);       
-           //printf("child %llu\n", *in);       
-           //printf("child %llu\n", *out);       
         }
     }else{ //parent
-        while((*out)%QSIZE == (*in)%QSIZE){
-            //printf("Parent out and in: %llu %llu\n", *out, *in);
-            //do nothing
+        for (int i = 0; i < n; ++i){
+            while((*out) == (*in)){
+//                printf("Parent waiting, out and in: %llu %llu\n", *out, *in);
+                        //do nothing
+            }
+            printf("parent %llu\n", qPtr[(*out)]); 
+            *out = (*out+1)%QSIZE;
+            //printf("parent %llu\n", qPtr[1]);       
         }
-        printf("parent %llu\n", qPtr[(*out)%QSIZE]); 
-        (*out)++;
-        //printf("parent %llu\n", qPtr[1]);       
+        //NEED TO UNLINK HERE, possible need to change qPtr baluesunlink(
     }
     return 0;
 }
