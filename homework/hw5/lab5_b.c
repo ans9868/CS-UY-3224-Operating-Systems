@@ -71,7 +71,7 @@ int main(int args, char* argv[])
            a = tempb;
            //printf("child %llu\n", tempb);       
            write(fd[1], &tempb, sizeof(tempb));
-           sleep(rand() % 4); //sleep from 0 to 3 seconds
+           sleep(rand() % 3); //sleep from 0 to 3 seconds
         }
         close(fd[1]);
     }else{ //parent

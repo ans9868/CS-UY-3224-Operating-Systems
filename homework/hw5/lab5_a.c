@@ -55,8 +55,8 @@ int main(int args, char* argv[])
            while((*in + 1) == *out){
               //do nothing 
            }
-           int sleepTime = rand() % 4;
-           sleep(rand() % 4); 
+           //int sleepTime = rand() % 3;
+           sleep(rand() % 3); 
            //printf("child %llu\n", tempb);       
            qPtr[(*in)] = tempb; 
            *in = (*in + 1) % QSIZE;
